@@ -90,10 +90,8 @@ private fun login() {
 
     println("\nAccount Ledger Authentication")
     println("--------------------------------")
-    print("Enter Your Username : ")
-    val username = readLine().toString()
-    print("Enter Your Password : ")
-    val password = readLine().toString()
+    val username = "banee_ishaque_k_06_02_2021"
+    val password = "9895204814"
 
     val user = UserDataSource()
     println("Contacting Server...")
