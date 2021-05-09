@@ -12,36 +12,47 @@ class TransactionDataSource {
 
     private val retrofitClient = ProjectRetrofitClient.retrofitClient
 
-    internal suspend fun insertTransaction(userId: Int,
-                                           eventDateTimeString: String,
-                                           particulars: String?,
-                                           amount: Float,
-                                           fromAccountId: Int,
-                                           toAccountId: Int?): ResponseHolder<InsertionResponse> {
+    internal suspend fun insertTransaction(
+        userId: Int,
+        eventDateTimeString: String,
+        particulars: String?,
+        amount: Float,
+        fromAccountId: Int,
+        toAccountId: Int?
+    ): ResponseHolder<InsertionResponse> {
         return try {
 
-            processApiResponse(retrofitClient.insertTransaction(userId = userId, eventDateTimeString = MysqlUtils.normalDateTimeStringToMysqlDateTimeString(eventDateTimeString), particulars = particulars, amount = amount, fromAccountId = fromAccountId, toAccountId = toAccountId))
+            processApiResponse(
+                retrofitClient.insertTransaction(
+                    userId = userId,
+                    eventDateTimeString = MysqlUtils.normalDateTimeStringToMysqlDateTimeString(eventDateTimeString),
+                    particulars = particulars,
+                    amount = amount,
+                    fromAccountId = fromAccountId,
+                    toAccountId = toAccountId
+                )
+            )
 
         } catch (exception: java.lang.Exception) {
 
             ResponseHolder.Error(Exception("Exception - ${exception.localizedMessage}"))
         }
     }
+}
 
-    //    TODO : Rewrite as general function for all responses
-    private fun processApiResponse(apiResponse: Response<InsertionResponse>): ResponseHolder<InsertionResponse> {
+//    TODO : Rewrite as general function for all responses
+private fun processApiResponse(apiResponse: Response<InsertionResponse>): ResponseHolder<InsertionResponse> {
 
-        if (apiResponse.isSuccessful) {
-            val loginApiResponseBody = apiResponse.body()
-            return if (loginApiResponseBody != null) {
+    if (apiResponse.isSuccessful) {
+        val loginApiResponseBody = apiResponse.body()
+        return if (loginApiResponseBody != null) {
 
-                ResponseHolder.Success(loginApiResponseBody)
+            ResponseHolder.Success(loginApiResponseBody)
 
-            } else {
+        } else {
 
-                ResponseHolder.Error(Exception("Invalid Response Body - $loginApiResponseBody"))
-            }
+            ResponseHolder.Error(Exception("Invalid Response Body - $loginApiResponseBody"))
         }
-        return ResponseHolder.Error(IOException("Exception Code - ${apiResponse.code()}, Message - ${apiResponse.message()}"))
     }
+    return ResponseHolder.Error(IOException("Exception Code - ${apiResponse.code()}, Message - ${apiResponse.message()}"))
 }

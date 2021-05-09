@@ -7,12 +7,14 @@ import accountLedgerCli.retrofit.ProjectRetrofitClient
 import java.io.IOException
 import java.lang.Exception
 
-class UserDataSource {
+internal class UserDataSource {
 
     private val retrofitClient = ProjectRetrofitClient.retrofitClient
 
-    internal suspend fun selectUser(username: String?,
-                                    password: String?): ResponseHolder<LoginResponse> {
+    internal suspend fun selectUser(
+        username: String?,
+        password: String?
+    ): ResponseHolder<LoginResponse> {
         return try {
 
             processApiResponse(retrofitClient.selectUser(username = username, password = password))
