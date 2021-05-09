@@ -6,12 +6,14 @@ import accountLedgerCli.retrofit.ResponseHolder
 import retrofit2.Response
 import java.io.IOException
 
-class TransactionsDataSource {
+internal class TransactionsDataSource {
 
     private val retrofitClient = ProjectRetrofitClient.retrofitClient
 
-    internal suspend fun selectUserTransactions(userId: Int,
-                                                accountId: Int): ResponseHolder<TransactionsResponse> {
+    internal suspend fun selectUserTransactions(
+        userId: Int,
+        accountId: Int
+    ): ResponseHolder<TransactionsResponse> {
         return try {
 
             processApiResponse(retrofitClient.selectUserTransactionsV2M(userId = userId, accountId = accountId))
@@ -21,21 +23,21 @@ class TransactionsDataSource {
             ResponseHolder.Error(Exception("Exception - ${exception.localizedMessage}"))
         }
     }
+}
 
-    //    TODO : Rewrite as general function for all responses
-    private fun processApiResponse(apiResponse: Response<TransactionsResponse>): ResponseHolder<TransactionsResponse> {
+//    TODO : Rewrite as general function for all responses
+private fun processApiResponse(apiResponse: Response<TransactionsResponse>): ResponseHolder<TransactionsResponse> {
 
-        if (apiResponse.isSuccessful) {
-            val userTransactionsApiResponseBody = apiResponse.body()
-            return if (userTransactionsApiResponseBody != null) {
+    if (apiResponse.isSuccessful) {
+        val userTransactionsApiResponseBody = apiResponse.body()
+        return if (userTransactionsApiResponseBody != null) {
 
-                ResponseHolder.Success(userTransactionsApiResponseBody)
+            ResponseHolder.Success(userTransactionsApiResponseBody)
 
-            } else {
+        } else {
 
-                ResponseHolder.Error(Exception("Invalid Response Body - $userTransactionsApiResponseBody"))
-            }
+            ResponseHolder.Error(Exception("Invalid Response Body - $userTransactionsApiResponseBody"))
         }
-        return ResponseHolder.Error(IOException("Exception Code - ${apiResponse.code()}, Message - ${apiResponse.message()}"))
     }
+    return ResponseHolder.Error(IOException("Exception Code - ${apiResponse.code()}, Message - ${apiResponse.message()}"))
 }
